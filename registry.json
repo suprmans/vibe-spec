@@ -1,0 +1,4 @@
+{
+  "name": "registry",
+  "description": "Central registry of all agents, skills, and templates available within the vibe-spec framework."
+}
