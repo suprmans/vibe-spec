@@ -1,0 +1,135 @@
+{
+  "registry_version": "0.1.0",
+  "publisher": "suprmans",
+  "project": "vibe-spec",
+  "description": "AI-first business specification framework for Business Analysts, Product Owners, and Product Managers.",
+  "license": "AGPL-3.0",
+  "repository": "github.com/suprmans/vibe-spec",
+  "constitution": "CONSTITUTION.md",
+  "skills": [
+    {
+      "id": "suprmans/vibe-spec:vibe-ba",
+      "name": "vibe-ba",
+      "version": "0.1.0",
+      "status": "available",
+      "path": "skills/vibe-ba/SKILL.md",
+      "description": "Org vibe analysis — chains intake-agent and vibe-analyzer to produce context.json and vibe-fingerprint.json with HITL Gate 1.",
+      "babok_areas": [
+        "Business Analysis Planning & Monitoring",
+        "Strategy Analysis"
+      ],
+      "agents_used": ["intake-agent", "vibe-analyzer"],
+      "hitl_gates": [1],
+      "inputs": ["raw business context (string)"],
+      "outputs": ["context.json", "vibe-fingerprint.json"],
+      "invoke": "/vibe-spec:vibe-ba \"[your business context]\""
+    },
+    {
+      "id": "suprmans/vibe-spec:req-elicitation",
+      "name": "req-elicitation",
+      "version": "0.2.0",
+      "status": "planned",
+      "path": "skills/req-elicitation/SKILL.md",
+      "description": "Requirements from context — generates INVEST-scored user stories with acceptance criteria from context.json and vibe-fingerprint.json.",
+      "babok_areas": [
+        "Elicitation & Collaboration",
+        "Requirements Life Cycle Management"
+      ],
+      "agents_used": ["elicitation-agent", "requirements-agent"],
+      "hitl_gates": [2],
+      "inputs": ["context.json", "vibe-fingerprint.json"],
+      "outputs": ["requirements.md", "scorecard.json"],
+      "invoke": "/vibe-spec:req-elicitation \"[context.json path]\" \"[vibe-fingerprint.json path]\""
+    },
+    {
+      "id": "suprmans/vibe-spec:gap-analysis",
+      "name": "gap-analysis",
+      "version": "0.2.0",
+      "status": "planned",
+      "path": "skills/gap-analysis/SKILL.md",
+      "description": "Structured gap analysis — generates AS-IS to TO-BE delta ranked by impact and effort.",
+      "babok_areas": [
+        "Requirements Analysis & Design Definition"
+      ],
+      "agents_used": ["gap-agent"],
+      "hitl_gates": [3],
+      "inputs": ["requirements.md", "context.json"],
+      "outputs": ["gap-analysis.md"],
+      "invoke": "/vibe-spec:gap-analysis \"[requirements.md path]\" \"[context.json path]\""
+    }
+  ],
+  "agents": [
+    {
+      "id": "intake-agent",
+      "version": "0.1.0",
+      "status": "available",
+      "path": "agents/intake-agent.md",
+      "babok_area": "Business Analysis Planning & Monitoring",
+      "output": "context.json",
+      "hitl_tier_default": 1
+    },
+    {
+      "id": "vibe-analyzer",
+      "version": "0.1.0",
+      "status": "available",
+      "path": "agents/vibe-analyzer.md",
+      "babok_area": "Strategy Analysis",
+      "output": "vibe-fingerprint.json",
+      "hitl_tier_default": 2
+    },
+    {
+      "id": "elicitation-agent",
+      "version": "0.2.0",
+      "status": "planned",
+      "path": "agents/elicitation-agent.md",
+      "babok_area": "Elicitation & Collaboration",
+      "output": "elicitation-themes.json",
+      "hitl_tier_default": 2
+    },
+    {
+      "id": "requirements-agent",
+      "version": "0.2.0",
+      "status": "planned",
+      "path": "agents/requirements-agent.md",
+      "babok_area": "Requirements Life Cycle Management",
+      "output": "requirements.md",
+      "hitl_tier_default": 2
+    },
+    {
+      "id": "gap-agent",
+      "version": "0.2.0",
+      "status": "planned",
+      "path": "agents/gap-agent.md",
+      "babok_area": "Requirements Analysis & Design Definition",
+      "output": "gap-analysis.md",
+      "hitl_tier_default": 2
+    },
+    {
+      "id": "stakeholder-agent",
+      "version": "0.2.0",
+      "status": "planned",
+      "path": "agents/stakeholder-agent.md",
+      "babok_area": "Requirements Analysis & Design Definition",
+      "output": "stakeholder-map.json",
+      "hitl_tier_default": 2
+    },
+    {
+      "id": "risk-agent",
+      "version": "0.3.0",
+      "status": "planned",
+      "path": "agents/risk-agent.md",
+      "babok_area": "Solution Evaluation",
+      "output": "risk-register.md",
+      "hitl_tier_default": 3
+    },
+    {
+      "id": "orchestrator",
+      "version": "0.3.0",
+      "status": "planned",
+      "path": "agents/orchestrator.md",
+      "babok_area": "All (coordination only)",
+      "output": "spec-health.json",
+      "hitl_tier_default": null
+    }
+  ]
+}
