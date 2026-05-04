@@ -29,7 +29,7 @@ install:
 	$(UV) sync --no-dev
 
 install-dev:
-	$(UV) sync --all-extras
+	$(UV) sync
 
 sync:
 	$(UV) lock

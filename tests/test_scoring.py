@@ -1,7 +1,8 @@
 """Tests for scoring modules."""
 
 import pytest
-from vibe_spec.scoring.invest import detect_ambiguity, score_story
+
+from vibe_spec.scoring.invest import score_story
 from vibe_spec.scoring.spec_health import SpecHealthInput, compute_spec_health
 
 
@@ -60,7 +61,7 @@ class TestSpecHealth:
         assert result.score < 0.60
 
     def test_invalid_input_raises(self) -> None:
-        with pytest.raises(ValueError):
+        with pytest.raises(ValueError, match="requirements_completeness must be between"):
             SpecHealthInput(
                 requirements_completeness=1.5,
                 gap_coverage=0.80,

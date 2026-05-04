@@ -189,20 +189,35 @@ spec_health = (
 
 ## Development
 
+### First-time setup
+
 ```bash
-make lint          # ruff linter
-make format        # ruff formatter
-make typecheck     # mypy
-make test          # pytest
-make test-cov      # pytest + coverage report
-make pre-commit-run  # run all hooks against staged files
+make install-dev        # install all dependencies including dev tools
+make pre-commit-install # wire pre-commit hooks into .git/ (run once)
 ```
 
-Pre-commit hooks run automatically on `git commit`:
-- ruff (lint + format)
-- mypy (type check)
-- JSON/YAML/TOML validation
-- No direct commits to `main`
+### Daily commands
+
+```bash
+make format        # ruff formatter + autofix
+make lint          # ruff linter
+make typecheck     # mypy strict type check
+make test          # pytest
+make test-cov      # pytest + coverage report (html + terminal)
+make pre-commit-run  # run all hooks against every file manually
+```
+
+### Recommended workflow
+
+```bash
+make format && make test  # before every commit
+```
+
+Pre-commit hooks fire automatically on `git commit` — no need to run them manually unless you want to check the whole codebase at once:
+- ruff lint + format
+- mypy type check
+- JSON / YAML / TOML validation
+- Blocks direct commits to `main`
 
 ---
 

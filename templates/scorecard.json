@@ -1,0 +1,129 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "vibe-spec Scorecard Schema",
+  "description": "Metric scorecard schema for all vibe-spec artefacts per CONSTITUTION Article 3",
+  "type": "object",
+  "properties": {
+    "run_id": { "type": "string", "format": "uuid" },
+    "artefact_type": {
+      "type": "string",
+      "enum": ["context", "vibe_fingerprint", "requirements", "nfr_register", "gap_analysis", "stakeholder_map", "risk_register", "spec_health"]
+    },
+    "generated_at": { "type": "string", "format": "date-time" },
+
+    "vibe_scorecard": {
+      "type": "object",
+      "description": "Vibe fingerprint scores — present when artefact_type is vibe_fingerprint",
+      "properties": {
+        "org_maturity":       { "$ref": "#/$defs/dimension_score" },
+        "agility_signal":     { "$ref": "#/$defs/dimension_score" },
+        "political_density":  { "$ref": "#/$defs/dimension_score" },
+        "process_discipline": { "$ref": "#/$defs/dimension_score" },
+        "change_readiness":   { "$ref": "#/$defs/dimension_score" },
+        "data_maturity":      { "$ref": "#/$defs/dimension_score" },
+        "vibe_confidence_avg": { "type": "number", "minimum": 0, "maximum": 1 }
+      },
+      "required": ["org_maturity", "agility_signal", "political_density", "process_discipline", "change_readiness", "data_maturity", "vibe_confidence_avg"]
+    },
+
+    "requirements_scorecard": {
+      "type": "object",
+      "description": "Requirements quality scores — present when artefact_type is requirements",
+      "properties": {
+        "total_stories":            { "type": "integer", "minimum": 0 },
+        "invest_score_avg":         { "type": "number", "minimum": 0, "maximum": 1 },
+        "invest_score_min":         { "type": "number", "minimum": 0, "maximum": 1 },
+        "ambiguity_flags_total":    { "type": "integer", "minimum": 0 },
+        "ac_coverage_avg":          { "type": "number", "minimum": 0 },
+        "priority_confidence_avg":  { "type": "number", "minimum": 0, "maximum": 1 },
+        "total_functional_reqs":    { "type": "integer", "minimum": 0 },
+        "fr_measurability_avg":     { "type": "number", "minimum": 0, "maximum": 1 },
+        "requirements_completeness":{ "type": "number", "minimum": 0, "maximum": 1 },
+        "invest_pass_rate":         { "type": "number", "minimum": 0, "maximum": 1 }
+      },
+      "required": ["total_stories", "invest_score_avg", "ambiguity_flags_total", "ac_coverage_avg", "priority_confidence_avg", "requirements_completeness"]
+    },
+
+    "nfr_scorecard": {
+      "type": "object",
+      "description": "NFR quality scores — present when artefact_type is nfr_register",
+      "properties": {
+        "total_nfrs":               { "type": "integer", "minimum": 0 },
+        "blocked_nfrs":             { "type": "integer", "minimum": 0 },
+        "measurability_avg":        { "type": "number", "minimum": 0, "maximum": 1 },
+        "nfr_coverage":             { "type": "number", "minimum": 0, "maximum": 1,
+                                      "description": "Fraction of 9 categories addressed" },
+        "must_have_count":          { "type": "integer", "minimum": 0 },
+        "vibe_derived_count":       { "type": "integer", "minimum": 0 },
+        "categories_covered": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["performance", "security", "availability", "scalability", "usability", "compliance", "maintainability", "interoperability", "data_privacy"]
+          }
+        }
+      },
+      "required": ["total_nfrs", "blocked_nfrs", "measurability_avg", "nfr_coverage"]
+    },
+
+    "gap_scorecard": {
+      "type": "object",
+      "description": "Gap analysis scores — present when artefact_type is gap_analysis",
+      "properties": {
+        "total_gaps":         { "type": "integer", "minimum": 0 },
+        "quick_wins":         { "type": "integer", "minimum": 0 },
+        "impact_avg":         { "type": "number", "minimum": 0, "maximum": 10 },
+        "as_is_confidence":   { "type": "number", "minimum": 0, "maximum": 1 },
+        "gap_coverage":       { "type": "number", "minimum": 0, "maximum": 1 },
+        "gaps_with_deps":     { "type": "integer", "minimum": 0 }
+      },
+      "required": ["total_gaps", "quick_wins", "impact_avg", "gap_coverage"]
+    },
+
+    "stakeholder_scorecard": {
+      "type": "object",
+      "description": "Stakeholder map scores — present when artefact_type is stakeholder_map",
+      "properties": {
+        "total_stakeholders":         { "type": "integer", "minimum": 0 },
+        "inferred_count":             { "type": "integer", "minimum": 0 },
+        "high_engagement_risk_count": { "type": "integer", "minimum": 0 },
+        "decision_maker_identified":  { "type": "boolean" },
+        "stakeholder_completeness":   { "type": "number", "minimum": 0, "maximum": 1 },
+        "avg_confidence":             { "type": "number", "minimum": 0, "maximum": 1 }
+      },
+      "required": ["total_stakeholders", "decision_maker_identified", "stakeholder_completeness"]
+    },
+
+    "spec_health_scorecard": {
+      "type": "object",
+      "description": "Composite spec health — present at end of full pipeline run",
+      "properties": {
+        "spec_health":                  { "type": "number", "minimum": 0, "maximum": 1 },
+        "status": {
+          "type": "string",
+          "enum": ["release_ready", "review_recommended", "elicitation_required"]
+        },
+        "requirements_completeness":   { "type": "number", "minimum": 0, "maximum": 1 },
+        "gap_coverage":                { "type": "number", "minimum": 0, "maximum": 1 },
+        "stakeholder_completeness":    { "type": "number", "minimum": 0, "maximum": 1 },
+        "vibe_confidence_avg":         { "type": "number", "minimum": 0, "maximum": 1 },
+        "risk_coverage":               { "type": "number", "minimum": 0, "maximum": 1 },
+        "recommendation":              { "type": "string" }
+      },
+      "required": ["spec_health", "status", "recommendation"]
+    }
+  },
+
+  "$defs": {
+    "dimension_score": {
+      "type": "object",
+      "properties": {
+        "score":          { "type": "number", "minimum": 0, "maximum": 10 },
+        "confidence":     { "type": "number", "minimum": 0, "maximum": 1 },
+        "signals":        { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+        "interpretation": { "type": "string" }
+      },
+      "required": ["score", "confidence", "signals", "interpretation"]
+    }
+  }
+}
