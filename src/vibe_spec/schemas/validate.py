@@ -6,8 +6,6 @@ import json
 from pathlib import Path
 from typing import Any
 
-import jsonschema
-
 SCHEMAS_DIR = Path(__file__).parent / "definitions"
 
 _REQUIRED_FIELDS: dict[str, list[str]] = {

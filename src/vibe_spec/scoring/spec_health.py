@@ -2,7 +2,6 @@
 
 from dataclasses import dataclass
 
-
 WEIGHTS = {
     "requirements_completeness": 0.30,
     "gap_coverage": 0.25,
@@ -56,7 +55,9 @@ def compute_spec_health(inputs: SpecHealthInput) -> SpecHealthResult:
         recommendation = "Artefact set is release-ready for downstream SDLC consumption."
     elif score >= THRESHOLD_REVIEW:
         status = "review_recommended"
-        recommendation = "Human review recommended before downstream use. Address low-scoring components."
+        recommendation = (
+            "Human review recommended before downstream use. Address low-scoring components."
+        )
     else:
         status = "elicitation_required"
         recommendation = "Additional elicitation required. Do not proceed until spec_health ≥ 0.60."

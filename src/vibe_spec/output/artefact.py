@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import json
 import uuid
-from datetime import datetime, timezone
+from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
@@ -14,12 +14,12 @@ def generate_run_id() -> str:
 
 
 def now_iso() -> str:
-    return datetime.now(timezone.utc).isoformat()
+    return datetime.now(UTC).isoformat()
 
 
 def make_output_dir(base: Path, run_id: str) -> Path:
     """Create versioned output directory: output/<run_id>-<YYYY-MM-DD>/"""
-    date_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    date_str = datetime.now(UTC).strftime("%Y-%m-%d")
     dir_path = base / "output" / f"{run_id[:8]}-{date_str}"
     dir_path.mkdir(parents=True, exist_ok=True)
     return dir_path
@@ -30,9 +30,11 @@ def artefact_filename(artefact_type: str, version: str, date: str) -> str:
     return f"{artefact_type}-v{version}-{date}.json"
 
 
-def write_artefact(output_dir: Path, artefact_type: str, data: dict[str, Any], version: str = "0.1") -> Path:
+def write_artefact(
+    output_dir: Path, artefact_type: str, data: dict[str, Any], version: str = "0.1"
+) -> Path:
     """Write an artefact JSON file to the output directory."""
-    date_str = datetime.now(timezone.utc).strftime("%Y-%m-%d")
+    date_str = datetime.now(UTC).strftime("%Y-%m-%d")
     filename = artefact_filename(artefact_type, version, date_str)
     path = output_dir / filename
     path.write_text(json.dumps(data, indent=2))

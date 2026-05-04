@@ -222,7 +222,8 @@ vibe-spec/
 ├── agents/
 │   ├── intake-agent.md      ← Parse and structure raw input
 │   ├── vibe-analyzer.md     ← Org culture + maturity fingerprint
-│   ├── requirements-agent.md← BABOK-aligned user stories + ACs
+│   ├── requirements-agent.md← User stories + functional requirements
+│   ├── nfr-agent.md         ← Non-functional requirements (9 categories)
 │   ├── gap-agent.md         ← AS-IS → TO-BE delta analysis
 │   ├── stakeholder-agent.md ← Influence/interest matrix + engagement plan
 │   ├── risk-agent.md        ← Risk register with confidence scores
@@ -231,28 +232,78 @@ vibe-spec/
 │   ├── vibe-ba/
 │   │   └── SKILL.md         ← Claude skill: org vibe analysis
 │   ├── req-elicitation/
-│   │   └── SKILL.md         ← Claude skill: requirements from context
+│   │   └── SKILL.md         ← Claude skill: requirements + NFRs
 │   └── gap-analysis/
-│       └── SKILL.md         ← Claude skill: structured gap analysis
+│       └── SKILL.md         ← Claude skill: gap + stakeholder analysis
+├── src/vibe_spec/           ← Python tool layer (invoked by agents via Bash)
+│   ├── scoring/
+│   │   ├── invest.py        ← INVEST criteria + ambiguity detection
+│   │   ├── nfr.py           ← NFR measurability scoring
+│   │   └── spec_health.py   ← Composite spec_health computation
+│   ├── schemas/
+│   │   └── validate.py      ← Constitutional artefact validation
+│   ├── output/
+│   │   └── artefact.py      ← Versioned file writing + approval logging
+│   └── cli/
+│       └── main.py          ← CLI entry point (vibe-spec <command>)
 ├── templates/
 │   ├── spec-output.md       ← Standard artefact output format
 │   ├── hitl-review.md       ← Human review prompt template
 │   └── scorecard.json       ← Metric scorecard schema
 ├── registry.json            ← Skill registry for distribution
-└── README.md                ← This file
+├── pyproject.toml           ← Python package (uv)
+├── Makefile                 ← Dev commands
+└── README.md
 ```
 
 ### CONSTITUTION.md — The BA methodology rules
 
-Inspired by the `CONSTITUTION.md` pattern from `ai-first-sdlc-practices`. Contains:
+Directly mirrors the `CONSTITUTION.md` pattern from `ai-first-sdlc-practices` (11 articles, single source of truth). vibe-spec uses 7 articles specific to BA practice:
 
 - **Article 1 — Human authority**: AI generates, humans approve. No artefact is final until a human has reviewed it at the appropriate HITL tier.
-- **Article 2 — BABOK alignment**: All outputs must map to a BABOK® v3 knowledge area.
+- **Article 2 — BABOK alignment**: All outputs must map to a BABOK v3 knowledge area.
 - **Article 3 — Metric completeness**: Every output carries a full metric scorecard. Outputs without scores are invalid.
 - **Article 4 — Traceability**: Every requirement traces to a business objective. Every gap traces to a requirement or pain point. No orphan artefacts.
 - **Article 5 — Confidence disclosure**: Every AI-generated score or classification discloses its confidence level. Low-confidence outputs are flagged, never silently accepted.
 - **Article 6 — Version control**: All artefacts are committed to version control with timestamped HITL approval records.
 - **Article 7 — No fabrication**: AI must not invent stakeholders, requirements, or risks without evidence in the input. Hallucination is a critical failure.
+
+### Python tool layer — the deterministic computation engine
+
+`vibe-spec` follows the same Python integration pattern as `ai-first-sdlc-practices`: **Python is not called via Anthropic SDK tool_use — it is invoked by Claude agents via Bash commands** inside skill instructions.
+
+This is the correct Claude Code native pattern. The division of responsibility is:
+
+| Layer | Responsibility |
+|---|---|
+| Claude agents | Reasoning, language understanding, judgment, orchestration |
+| Python (invoked via Bash) | Deterministic scoring, schema validation, artefact I/O, mathematics |
+
+Agents call Python tools when they need exact, reproducible computation — not AI estimates:
+
+```bash
+# Agent calls this inside a skill to get exact INVEST scores
+uv run vibe-spec score-story \
+  --text "As a user..." \
+  --ac "User receives email within 60s" \
+  --ac "Link expires after 1 hour"
+# → invest_score: 0.83, ambiguity_flags: 0, passes: true
+
+# Agent calls this to validate an artefact before passing to HITL gate
+uv run vibe-spec validate context output/run-id/context.json
+# → PASS or list of constitutional violations
+
+# Agent calls this after all artefacts are complete
+uv run vibe-spec spec-health \
+  --requirements-completeness 0.85 \
+  --gap-coverage 0.80 \
+  --stakeholder-completeness 0.75 \
+  --vibe-confidence-avg 0.82 \
+  --risk-coverage 0.70
+# → spec_health: 0.79, status: review_recommended
+```
+
+Future Python tools can extend to statistical analysis (scipy correlation between vibe dimensions and requirement quality across runs), data pipeline processing, or any computation where determinism and testability matter.
 
 ---
 
@@ -279,14 +330,21 @@ User provides input context
 [HITL GATE 1] ← Human confirms org context is accurate
       │
       ▼
-[requirements-agent]
+[requirements-agent]                        (parallel)
   - Generate user stories calibrated to org maturity (vibe score)
-  - Apply INVEST criteria + ambiguity check
+  - Call: `vibe-spec score-story` → exact INVEST scores
+  - Call: `vibe-spec detect-ambiguity` → flag weasel words
   - Assign MoSCoW priority with confidence score
   - Output: requirements.md + scorecard.json
+[nfr-agent]                                 (parallel)
+  - Identify explicit NFRs from context
+  - Derive vibe-signal NFRs (9 categories)
+  - Call: `vibe-spec score-nfr` → measurability scores
+  - Block NFRs with measurability < 0.50
+  - Output: nfr-register.md
       │
       ▼
-[HITL GATE 2] ← Human reviews and approves each story
+[HITL GATE 2] ← Human reviews stories + NFRs together
       │
       ▼
 [gap-agent] + [stakeholder-agent] (parallel)
@@ -319,30 +377,48 @@ Ready for downstream SDLC consumption
 
 ## Integration with ai-first-sdlc-practices
 
-`vibe-spec` output is designed to feed directly into the `ai-first-sdlc-practices` framework by SteveGJones. The two projects form a complete AI-native delivery pipeline:
+`vibe-spec` is the upstream layer that feeds `ai-first-sdlc-practices` (SteveGJones). The two projects form a complete AI-native delivery pipeline — vibe-spec handles the business specification phase, ai-first-sdlc-practices enforces the engineering delivery phase.
 
 | Layer | Project | Input | Output |
 |---|---|---|---|
-| Business specification | **vibe-spec** | Problem context | `requirements.md`, `gap-analysis.md`, `stakeholder-map.json` |
+| Business specification | **vibe-spec** | Problem context | `requirements.md`, `nfr-register.md`, `gap-analysis.md`, `stakeholder-map.json`, `risk-register.md` |
 | SDLC enforcement | `ai-first-sdlc-practices` | Feature proposals | Architecture → Code → PR → Ship |
 
-The `vibe-spec` artefacts map directly to `ai-first-sdlc-practices` conventions:
+### Architectural alignment
+
+Both projects follow the same Claude Code native patterns — this was a deliberate alignment decision after studying `ai-first-sdlc-practices` v3:
+
+| Pattern | ai-first-sdlc-practices | vibe-spec |
+|---|---|---|
+| Governance | `CONSTITUTION.md` (11 articles) | `CONSTITUTION.md` (7 articles) |
+| Agent format | Markdown frontmatter + prose | Markdown + prompt template |
+| Skill format | `SKILL.md` prose instructions | `SKILL.md` prose instructions |
+| Python integration | Bash-invoked scripts (not SDK tool_use) | Bash-invoked CLI (`vibe-spec <cmd>`) |
+| State management | Filesystem (`.sdlc/team-config.json`) | Filesystem (`output/<run-id>/`) |
+| Plugin distribution | Claude Code `/plugin` command | Claude Code `/plugin` command |
+
+### Artefact handoff
+
+vibe-spec artefacts map directly to ai-first-sdlc-practices conventions:
 
 - `requirements.md` → `docs/feature-proposals/XX-name.md`
+- `nfr-register.md` → consumed by `verification-enforcer` and `code-review-specialist`
 - `stakeholder-map.json` → consumed by `sdlc-team-pm` agents
 - `risk-register.md` → input to `code-review-specialist` and `verification-enforcer`
+- `gap-analysis.md` → informs architecture decisions via `sdlc-team-ai` agents
 
-To use both together:
+### Using both together
 
 ```bash
 # Install vibe-spec skills
 /plugin marketplace add suprmans/vibe-spec
 
-# Run BA analysis
-/vibe-spec:analyse "describe your business problem here"
+# Run BA analysis — produces all artefacts
+/vibe-spec:vibe-ba "describe your business problem here"
 
-# Hand off to SDLC
-/sdlc-core:new-feature 1 my-feature "$(cat requirements.md)"
+# After HITL gates 1–4 complete:
+# Hand off to SDLC engineering pipeline
+/sdlc-core:new-feature 1 my-feature "$(cat output/latest/requirements.md)"
 ```
 
 ---
@@ -359,32 +435,45 @@ The problem is not that AI cannot help with BA work. The problem is that no stru
 
 ## Roadmap
 
-### v0.1 — Foundation (solo, ~4 weeks)
-- [ ] `CONSTITUTION.md` — BA methodology rules
-- [ ] `intake-agent` — context parsing
-- [ ] `vibe-analyzer` — org fingerprint (6 dimensions)
-- [ ] `vibe-ba` SKILL.md — distributable Claude skill
-- [ ] `registry.json` — skill registry schema
+### v0.1 — Foundation ✓
+- [x] `CONSTITUTION.md` — BA methodology rules (7 articles)
+- [x] `CLAUDE.md` — agent gateway for Claude Code
+- [x] `intake-agent` — context parsing, entity extraction
+- [x] `vibe-analyzer` — org fingerprint (6 dimensions, BA archetypes, red flags)
+- [x] `requirements-agent` — user stories (INVEST-scored) + functional requirements
+- [x] `nfr-agent` — non-functional requirements (9 categories, measurability scoring)
+- [x] `vibe-ba` SKILL.md — distributable Claude skill
+- [x] `registry.json` — skill registry schema
+- [x] Python package scaffold (`scoring/`, `schemas/`, `output/`, `cli/`)
+- [x] `pyproject.toml` + `Makefile` + `.pre-commit-config.yaml` (uv + ruff + mypy + pytest)
 
-### v0.2 — Core agents (~3 weeks)
-- [ ] `requirements-agent` — INVEST-scored user stories
-- [ ] `gap-agent` — AS-IS → TO-BE delta
-- [ ] `stakeholder-agent` — influence/interest matrix
-- [ ] HITL gates 1–3 implemented
-- [ ] `scorecard.json` schema finalised
+### v0.2 — Core agents ✓
+- [x] `gap-agent` — AS-IS → TO-BE delta, 4-tier prioritisation matrix
+- [x] `stakeholder-agent` — influence/interest matrix, engagement risk, red flags
+- [x] `req-elicitation` SKILL.md — chains requirements-agent + nfr-agent + HITL Gate 2
+- [x] `gap-analysis` SKILL.md — chains gap-agent + stakeholder-agent + HITL Gate 3
+- [x] `templates/scorecard.json` — full JSON schema for all artefact scorecards
+- [x] `templates/spec-output.md` + `templates/hitl-review.md`
+- [x] Python CLI: `score-story`, `score-nfr`, `score-gap`, `spec-health`, `validate` — bash-callable with `--json` flag
+- [x] `scoring/nfr.py` — measurability scoring engine
+- [x] Test suite: 22 tests across scoring, validation modules (51% coverage)
+- [x] Architecture aligned with `ai-first-sdlc-practices` v3 patterns (Bash-invoked Python, not SDK tool_use)
 
-### v0.3 — Complete pipeline (~2 weeks)
-- [ ] `risk-agent` — risk register with confidence scores
-- [ ] `orchestrator` — full pipeline chain
-- [ ] `spec_health` composite scoring
-- [ ] HITL gate 4 (final sign-off)
-- [ ] `ai-first-sdlc-practices` integration test
+### v0.3 — Complete pipeline
+- [ ] `risk-agent` — risk register, likelihood × impact matrix, Tier 3 HITL always
+- [ ] `orchestrator` — full pipeline chain, constitutional validation at each stage
+- [ ] HITL gate 4 (final sign-off) implemented in orchestrator
+- [ ] `spec_health` end-to-end computation via `vibe-spec spec-health` CLI
+- [ ] `ai-first-sdlc-practices` integration test (requirements.md → feature proposal handoff)
+- [ ] CLI: `write-artefact` command with versioned output management
+- [ ] Test coverage for `cli/`, `output/` modules (target ≥ 70% overall)
 
 ### v1.0 — Public release
 - [ ] `sdlc-team-ba` plugin for `ai-first-sdlc-practices` marketplace
 - [ ] ReqIQ web interface (powered by vibe-spec agents)
 - [ ] Documentation site
 - [ ] Example artefacts from 5 real use cases
+- [ ] `registry.json` hosted and resolvable via `/plugin marketplace add suprmans/vibe-spec`
 
 ---
 

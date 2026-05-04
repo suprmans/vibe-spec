@@ -1,5 +1,5 @@
 {
-  "registry_version": "0.1.0",
+  "registry_version": "0.2.0",
   "publisher": "suprmans",
   "project": "vibe-spec",
   "description": "AI-first business specification framework for Business Analysts, Product Owners, and Product Managers.",
@@ -28,7 +28,7 @@
       "id": "suprmans/vibe-spec:req-elicitation",
       "name": "req-elicitation",
       "version": "0.2.0",
-      "status": "planned",
+      "status": "available",
       "path": "skills/req-elicitation/SKILL.md",
       "description": "Requirements from context — generates INVEST-scored user stories with acceptance criteria from context.json and vibe-fingerprint.json.",
       "babok_areas": [
@@ -45,7 +45,7 @@
       "id": "suprmans/vibe-spec:gap-analysis",
       "name": "gap-analysis",
       "version": "0.2.0",
-      "status": "planned",
+      "status": "available",
       "path": "skills/gap-analysis/SKILL.md",
       "description": "Structured gap analysis — generates AS-IS to TO-BE delta ranked by impact and effort.",
       "babok_areas": [
@@ -98,7 +98,7 @@
     {
       "id": "gap-agent",
       "version": "0.2.0",
-      "status": "planned",
+      "status": "available",
       "path": "agents/gap-agent.md",
       "babok_area": "Requirements Analysis & Design Definition",
       "output": "gap-analysis.md",
@@ -107,7 +107,7 @@
     {
       "id": "stakeholder-agent",
       "version": "0.2.0",
-      "status": "planned",
+      "status": "available",
       "path": "agents/stakeholder-agent.md",
       "babok_area": "Requirements Analysis & Design Definition",
       "output": "stakeholder-map.json",
