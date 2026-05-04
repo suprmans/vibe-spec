@@ -38,9 +38,10 @@ Run agents in this order. Do not skip stages. Do not run a later agent without t
       ↓
 [HITL GATE 1]          ←  Human confirms org context
       ↓
-[requirements-agent]   →  requirements.md + scorecard.json
+[requirements-agent]   →  requirements.md + scorecard.json    (parallel)
+[nfr-agent]            →  nfr-register.md                      (parallel)
       ↓
-[HITL GATE 2]          ←  Human reviews and approves each story
+[HITL GATE 2]          ←  Human reviews stories + NFRs together
       ↓
 [gap-agent]            →  gap-analysis.md          (parallel)
 [stakeholder-agent]    →  stakeholder-map.json      (parallel)
