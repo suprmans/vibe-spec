@@ -25,7 +25,7 @@ The **specification** is the deliverable. The **analyst** is the authority. The 
 | Data analyst | Analytical report | vibe-analysis |
 | Business Analyst / PO / PM | **Specification** | **vibe-spec** ← this project |
 
-`vibe-spec` is the upstream layer that feeds AI-first SDLC frameworks (e.g., `ai-first-sdlc-practices`). It produces the feature proposals, requirements docs, and stakeholder context that developer workflows need but cannot generate themselves.
+`vibe-spec` is the upstream specification layer that feeds any AI-native SDLC pipeline. It produces the feature proposals, requirements docs, and stakeholder context that engineering workflows need but cannot generate themselves.
 
 ```
 Business reality / problem statement
@@ -35,7 +35,7 @@ Business reality / problem statement
    Structured spec artefacts
    (requirements, gap, vibe, stakeholders, risks)
            ↓
-    ai-first-sdlc-practices     ← downstream consumer
+    downstream SDLC pipeline
            ↓
    Architecture → Code → Ship
 ```
@@ -258,7 +258,7 @@ vibe-spec/
 
 ### CONSTITUTION.md — The BA methodology rules
 
-Directly mirrors the `CONSTITUTION.md` pattern from `ai-first-sdlc-practices` (11 articles, single source of truth). vibe-spec uses 7 articles specific to BA practice:
+A single source of truth that governs all agent behaviour. vibe-spec uses 7 articles specific to BA practice:
 
 - **Article 1 — Human authority**: AI generates, humans approve. No artefact is final until a human has reviewed it at the appropriate HITL tier.
 - **Article 2 — BABOK alignment**: All outputs must map to a BABOK v3 knowledge area.
@@ -270,9 +270,7 @@ Directly mirrors the `CONSTITUTION.md` pattern from `ai-first-sdlc-practices` (1
 
 ### Python tool layer — the deterministic computation engine
 
-`vibe-spec` follows the same Python integration pattern as `ai-first-sdlc-practices`: **Python is not called via Anthropic SDK tool_use — it is invoked by Claude agents via Bash commands** inside skill instructions.
-
-This is the correct Claude Code native pattern. The division of responsibility is:
+**Python is not called via Anthropic SDK tool_use — it is invoked by Claude agents via Bash commands** inside skill instructions. This is the Claude Code native pattern. The division of responsibility is:
 
 | Layer | Responsibility |
 |---|---|
@@ -375,50 +373,35 @@ Ready for downstream SDLC consumption
 
 ---
 
-## Integration with ai-first-sdlc-practices
+## Downstream SDLC integration
 
-`vibe-spec` is the upstream layer that feeds `ai-first-sdlc-practices` (SteveGJones). The two projects form a complete AI-native delivery pipeline — vibe-spec handles the business specification phase, ai-first-sdlc-practices enforces the engineering delivery phase.
+`vibe-spec` is the upstream specification layer. It sits before any SDLC engineering pipeline and provides the structured, human-approved artefacts that engineering workflows need to build the right thing.
 
-| Layer | Project | Input | Output |
+| Layer | What it does | Input | Output |
 |---|---|---|---|
 | Business specification | **vibe-spec** | Problem context | `requirements.md`, `nfr-register.md`, `gap-analysis.md`, `stakeholder-map.json`, `risk-register.md` |
-| SDLC enforcement | `ai-first-sdlc-practices` | Feature proposals | Architecture → Code → PR → Ship |
-
-### Architectural alignment
-
-Both projects follow the same Claude Code native patterns — this was a deliberate alignment decision after studying `ai-first-sdlc-practices` v3:
-
-| Pattern | ai-first-sdlc-practices | vibe-spec |
-|---|---|---|
-| Governance | `CONSTITUTION.md` (11 articles) | `CONSTITUTION.md` (7 articles) |
-| Agent format | Markdown frontmatter + prose | Markdown + prompt template |
-| Skill format | `SKILL.md` prose instructions | `SKILL.md` prose instructions |
-| Python integration | Bash-invoked scripts (not SDK tool_use) | Bash-invoked CLI (`vibe-spec <cmd>`) |
-| State management | Filesystem (`.sdlc/team-config.json`) | Filesystem (`output/<run-id>/`) |
-| Plugin distribution | Claude Code `/plugin` command | Claude Code `/plugin` command |
+| SDLC pipeline | Your engineering workflow | Approved artefacts | Architecture → Code → PR → Ship |
 
 ### Artefact handoff
 
-vibe-spec artefacts map directly to ai-first-sdlc-practices conventions:
+After Gate 4 approval, vibe-spec artefacts feed directly into your engineering process:
 
-- `requirements.md` → `docs/feature-proposals/XX-name.md`
-- `nfr-register.md` → consumed by `verification-enforcer` and `code-review-specialist`
-- `stakeholder-map.json` → consumed by `sdlc-team-pm` agents
-- `risk-register.md` → input to `code-review-specialist` and `verification-enforcer`
-- `gap-analysis.md` → informs architecture decisions via `sdlc-team-ai` agents
+- `requirements.md` → feature proposals for sprint planning
+- `nfr-register.md` → quality gates for architecture and code review
+- `stakeholder-map.json` → engagement plan for delivery leads
+- `gap-analysis.md` → scope and prioritisation input
+- `risk-register.md` → risk inputs for review and verification
 
-### Using both together
+### Using vibe-spec
 
 ```bash
-# Install vibe-spec skills
+# Install vibe-spec
 /plugin marketplace add suprmans/vibe-spec
 
-# Run BA analysis — produces all artefacts
+# Run full BA analysis
 /vibe-spec:vibe-ba "describe your business problem here"
 
-# After HITL gates 1–4 complete:
-# Hand off to SDLC engineering pipeline
-/sdlc-core:new-feature 1 my-feature "$(cat output/latest/requirements.md)"
+# After HITL gates 1–4 complete, hand artefacts to your engineering pipeline
 ```
 
 ---
@@ -429,7 +412,7 @@ vibe-spec artefacts map directly to ai-first-sdlc-practices conventions:
 
 AI-powered requirements tools report 40–60% time savings in the requirements gathering phase and can help identify up to 30% more requirements that would otherwise be missed.
 
-The problem is not that AI cannot help with BA work. The problem is that no structured, agent-based, metric-driven framework exists for BA the way `ai-first-sdlc-practices` exists for engineering. `vibe-spec` is that framework.
+The problem is not that AI cannot help with BA work. The problem is that no structured, agent-based, metric-driven framework exists for BA the way engineering SDLC frameworks exist for developers. `vibe-spec` is that framework.
 
 ---
 
@@ -457,19 +440,19 @@ The problem is not that AI cannot help with BA work. The problem is that no stru
 - [x] Python CLI: `score-story`, `score-nfr`, `score-gap`, `spec-health`, `validate` — bash-callable with `--json` flag
 - [x] `scoring/nfr.py` — measurability scoring engine
 - [x] Test suite: 22 tests across scoring, validation modules (51% coverage)
-- [x] Architecture aligned with `ai-first-sdlc-practices` v3 patterns (Bash-invoked Python, not SDK tool_use)
+- [x] Architecture: Claude Code native patterns (Bash-invoked Python, not SDK tool_use)
 
-### v0.3 — Complete pipeline
-- [ ] `risk-agent` — risk register, likelihood × impact matrix, Tier 3 HITL always
-- [ ] `orchestrator` — full pipeline chain, constitutional validation at each stage
-- [ ] HITL gate 4 (final sign-off) implemented in orchestrator
-- [ ] `spec_health` end-to-end computation via `vibe-spec spec-health` CLI
-- [ ] `ai-first-sdlc-practices` integration test (requirements.md → feature proposal handoff)
-- [ ] CLI: `write-artefact` command with versioned output management
-- [ ] Test coverage for `cli/`, `output/` modules (target ≥ 70% overall)
+### v0.3 — Complete pipeline ✓
+- [x] `risk-agent` — risk register, likelihood × impact matrix, 7 categories, Tier 3 always
+- [x] `orchestrator` — full pipeline chain, constitutional validation at every stage, Gate 4
+- [x] HITL Gate 4 with full artefact manifest and traceability chain validation
+- [x] `spec_health` end-to-end via `vibe-spec spec-health --json` CLI
+- [x] CLI: `score-risk`, `write-artefact` bash-callable commands added
+- [x] `scoring/risk.py` — risk scoring engine with register scorecard
+- [x] Test suite expanded: risk, output, and validation modules covered
 
 ### v1.0 — Public release
-- [ ] `sdlc-team-ba` plugin for `ai-first-sdlc-practices` marketplace
+- [ ] `vibe-spec-ba` plugin for Claude Code plugin marketplace
 - [ ] ReqIQ web interface (powered by vibe-spec agents)
 - [ ] Documentation site
 - [ ] Example artefacts from 5 real use cases
@@ -503,7 +486,6 @@ The problem is not that AI cannot help with BA work. The problem is that no stru
 - NIST. *AI Risk Management Framework (AI RMF 1.0)*. National Institute of Standards and Technology, 2023. airc.nist.gov
 - Standish Group. *CHAOS Report*. Referenced via Eltegra AI, 2025.
 - Karpathy, A. *"There's a new kind of coding I call vibe coding."* X (formerly Twitter), February 2, 2025.
-- Jones, S. *ai-first-sdlc-practices*. GitHub, 2025. github.com/SteveGJones/ai-first-sdlc-practices
 - Pendo. *The Vibe PM and the Evolution of Product Management*. pendo.io, July 2025.
 
 ---
