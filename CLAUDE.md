@@ -144,13 +144,15 @@ output/
 
 ---
 
-## Integration with ai-first-sdlc-practices
+## Downstream handoff
 
-Artefacts produced by vibe-spec map directly to ai-first-sdlc-practices conventions:
+vibe-spec artefacts are ready for consumption by any downstream SDLC pipeline once Gate 4 is approved:
 
-- `requirements.md` → `docs/feature-proposals/XX-name.md`
-- `stakeholder-map.json` → consumed by `sdlc-team-pm` agents
-- `risk-register.md` → input to `code-review-specialist` and `verification-enforcer`
+- `requirements.md` → feature proposals for your engineering workflow
+- `nfr-register.md` → quality and compliance constraints for architecture and code review
+- `stakeholder-map.json` → engagement plan for delivery team leads
+- `gap-analysis.md` → scope input for sprint planning
+- `risk-register.md` → risk inputs for code review and verification
 
 ---
 

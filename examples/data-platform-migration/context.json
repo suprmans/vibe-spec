@@ -1,0 +1,167 @@
+{
+  "run_id": "ex-data-platform-migration-001",
+  "timestamp": "2026-02-10T11:00:00Z",
+  "input_type": "process_description",
+  "input_summary": "A retail bank's analytics team is operating a 12-year-old on-premise data warehouse that is no longer supported by the vendor. Query performance has degraded significantly — reports that previously ran in 10 minutes now take 4–6 hours. The team wants to migrate to a cloud-native data platform to restore reporting SLAs, enable self-serve analytics for business users, and reduce infrastructure maintenance cost. A phased migration is required because the existing system cannot be taken offline — it feeds 14 mission-critical reports used daily by the risk and compliance team.",
+  "babok_area": "Business Analysis Planning & Monitoring",
+  "intake_confidence": 0.86,
+  "entities": {
+    "people_and_roles": [
+      {
+        "id": "PER-001",
+        "value": "Analytics team (migration owners)",
+        "source_text": "A retail bank's analytics team",
+        "confidence": 0.93,
+        "inferred": false
+      },
+      {
+        "id": "PER-002",
+        "value": "Risk and compliance team (critical report consumers)",
+        "source_text": "14 mission-critical reports used daily by the risk and compliance team",
+        "confidence": 0.95,
+        "inferred": false
+      },
+      {
+        "id": "PER-003",
+        "value": "Business users (self-serve analytics consumers)",
+        "source_text": "enable self-serve analytics for business users",
+        "confidence": 0.87,
+        "inferred": false
+      }
+    ],
+    "systems_and_tools": [
+      {
+        "id": "SYS-001",
+        "value": "Legacy on-premise data warehouse (12-year-old, end-of-support)",
+        "source_text": "12-year-old on-premise data warehouse that is no longer supported by the vendor",
+        "confidence": 0.97,
+        "inferred": false
+      },
+      {
+        "id": "SYS-002",
+        "value": "14 mission-critical compliance reports (feeds from legacy DWH)",
+        "source_text": "feeds 14 mission-critical reports used daily by the risk and compliance team",
+        "confidence": 0.96,
+        "inferred": false
+      },
+      {
+        "id": "SYS-003",
+        "value": "Target cloud-native data platform (not yet selected)",
+        "source_text": "migrate to a cloud-native data platform",
+        "confidence": 0.90,
+        "inferred": false
+      }
+    ],
+    "processes": [
+      {
+        "id": "PRC-001",
+        "value": "Daily compliance reporting pipeline (legacy DWH → 14 reports)",
+        "source_text": "14 mission-critical reports used daily by the risk and compliance team",
+        "confidence": 0.94,
+        "inferred": false
+      },
+      {
+        "id": "PRC-002",
+        "value": "Ad-hoc analytics queries (currently degraded)",
+        "source_text": "reports that previously ran in 10 minutes now take 4–6 hours",
+        "confidence": 0.89,
+        "inferred": false
+      }
+    ],
+    "business_objectives": [
+      {
+        "id": "OBJ-001",
+        "value": "Restore reporting SLAs — all reports complete within 30 minutes",
+        "source_text": "restore reporting SLAs",
+        "confidence": 0.88,
+        "inferred": true
+      },
+      {
+        "id": "OBJ-002",
+        "value": "Enable self-serve analytics for business users without IT involvement",
+        "source_text": "enable self-serve analytics for business users",
+        "confidence": 0.92,
+        "inferred": false
+      },
+      {
+        "id": "OBJ-003",
+        "value": "Reduce infrastructure maintenance and licensing cost",
+        "source_text": "reduce infrastructure maintenance cost",
+        "confidence": 0.90,
+        "inferred": false
+      },
+      {
+        "id": "OBJ-004",
+        "value": "Migrate without disrupting daily compliance reporting",
+        "source_text": "existing system cannot be taken offline — it feeds 14 mission-critical reports",
+        "confidence": 0.97,
+        "inferred": false
+      }
+    ],
+    "pain_points": [
+      {
+        "id": "PAIN-001",
+        "value": "Vendor no longer supports the data warehouse — no security patches or bug fixes",
+        "source_text": "no longer supported by the vendor",
+        "severity": "high",
+        "confidence": 0.97,
+        "inferred": false
+      },
+      {
+        "id": "PAIN-002",
+        "value": "Query performance degraded: 10-minute reports now taking 4–6 hours",
+        "source_text": "reports that previously ran in 10 minutes now take 4–6 hours",
+        "severity": "high",
+        "confidence": 0.98,
+        "inferred": false
+      },
+      {
+        "id": "PAIN-003",
+        "value": "Business users cannot do self-serve analytics — reliant on IT for every query",
+        "source_text": "enable self-serve analytics for business users",
+        "severity": "medium",
+        "confidence": 0.82,
+        "inferred": true
+      }
+    ],
+    "constraints": [
+      {
+        "id": "CON-001",
+        "value": "Zero downtime required on the 14 daily compliance reports during migration",
+        "source_text": "existing system cannot be taken offline",
+        "confidence": 0.97,
+        "inferred": false
+      },
+      {
+        "id": "CON-002",
+        "value": "Retail bank — data residency and compliance regulations apply",
+        "source_text": "retail bank",
+        "confidence": 0.85,
+        "inferred": true
+      }
+    ],
+    "dates_and_timelines": [
+      {
+        "id": "DATE-001",
+        "value": "Phased migration — no single cutover date",
+        "absolute_date": null,
+        "ambiguous": true,
+        "source_text": "A phased migration is required"
+      }
+    ]
+  },
+  "insufficient_input_flags": [
+    "No target cloud platform specified — technology decision required before architecture can be finalised",
+    "No specific go-live deadline mentioned — timeline ambiguous"
+  ],
+  "hitl_tier": "2",
+  "hitl_trigger_reason": "Target technology not specified. Insufficient_input_flags present. Human confirmation required before requirements are generated.",
+  "approval_log": [
+    {
+      "gate": 1,
+      "approved_by": "example-reviewer",
+      "approved_at": "2026-02-10T12:00:00Z",
+      "note": "Example artefact — technology decision deferred to Gate 2. Proceed with platform-agnostic requirements."
+    }
+  ]
+}

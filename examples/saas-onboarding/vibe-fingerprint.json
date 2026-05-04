@@ -1,0 +1,62 @@
+{
+  "run_id": "ex-saas-onboarding-001",
+  "timestamp": "2026-04-15T09:45:00Z",
+  "babok_area": "Strategy Analysis",
+  "source_context_id": "ex-saas-onboarding-001",
+  "dimensions": {
+    "org_maturity": {
+      "score": 6.5,
+      "confidence": 0.80,
+      "signals": ["product team defined", "quantified drop-off metric exists", "aha moment defined"],
+      "interpretation": "Mid-maturity startup. Has product metrics but informal processes."
+    },
+    "agility_signal": {
+      "score": 7.5,
+      "confidence": 0.78,
+      "signals": ["product-led growth language", "short iteration targets (3-day ttfv)", "no mention of change control"],
+      "interpretation": "High agility — product-led team iterating quickly."
+    },
+    "stakeholder_alignment": {
+      "score": 6.0,
+      "confidence": 0.72,
+      "signals": ["product team objective clear", "IT role is a blocker not a partner", "no exec sponsorship mentioned"],
+      "interpretation": "Moderate alignment. IT and product teams not yet coordinating on solution."
+    },
+    "data_maturity": {
+      "score": 7.0,
+      "confidence": 0.82,
+      "signals": ["35% drop-off rate quantified", "14-day vs 3-day ttfv quantified", "aha moment defined as specific event"],
+      "interpretation": "Good data discipline. Key metrics already tracked and quantified."
+    },
+    "process_discipline": {
+      "score": 5.0,
+      "confidence": 0.68,
+      "signals": ["current process requires IT involvement", "no mention of documented onboarding steps"],
+      "interpretation": "Moderate process discipline. Current process is a known pain but not formally documented."
+    },
+    "technology_fluency": {
+      "score": 7.5,
+      "confidence": 0.77,
+      "signals": ["data source connectors mentioned", "self-serve OAuth implied", "SaaS-native team"],
+      "interpretation": "High tech fluency. Team understands the technical problem clearly."
+    }
+  },
+  "composite_vibe_score": 6.58,
+  "vibe_label": "Scaling Startup",
+  "calibration_notes": [
+    "Use story-first format (agility_signal 7.5)",
+    "Include quantified ACs with specific metrics (data_maturity 7.0)",
+    "Keep language product-led, not enterprise-formal (org_maturity 6.5)",
+    "Flag IT coordination as a stakeholder risk"
+  ],
+  "hitl_tier": "2",
+  "hitl_trigger_reason": "Stakeholder alignment score 6.0 — IT role is unresolved blocker. Human confirmation required.",
+  "approval_log": [
+    {
+      "gate": 1,
+      "approved_by": "example-reviewer",
+      "approved_at": "2026-04-15T10:00:00Z",
+      "note": "Example artefact — approved for documentation purposes"
+    }
+  ]
+}

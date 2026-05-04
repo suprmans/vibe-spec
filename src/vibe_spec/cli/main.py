@@ -253,5 +253,88 @@ def spec_health(
     )
 
 
+@app.command(name="score-risk")
+def score_risk(
+    likelihood: float = typer.Option(..., help="Likelihood 0.0–10.0"),
+    impact: float = typer.Option(..., help="Impact 0.0–10.0"),
+    category: str = typer.Option(..., help="Risk category"),
+    json_output: bool = typer.Option(False, "--json", help="Output as JSON for agent parsing"),
+) -> None:
+    """Compute risk score and classification from likelihood × impact."""
+    from vibe_spec.scoring.risk import RISK_CATEGORIES, compute_risk_score
+
+    if category not in RISK_CATEGORIES:
+        console.print(f"[red]Unknown category '{category}'. Valid: {sorted(RISK_CATEGORIES)}[/red]")
+        raise typer.Exit(code=1)
+
+    try:
+        result = compute_risk_score(likelihood, impact)
+    except ValueError as e:
+        console.print(f"[red]{e}[/red]")
+        raise typer.Exit(code=1) from e
+
+    output = {
+        "likelihood": result.likelihood,
+        "impact": result.impact,
+        "risk_score": result.risk_score,
+        "classification": result.classification,
+        "category": category,
+    }
+
+    if json_output:
+        typer.echo(json.dumps(output))
+        return
+
+    colour = (
+        "red"
+        if result.classification == "critical"
+        else "yellow"
+        if result.classification == "high"
+        else "blue"
+        if result.classification == "medium"
+        else "dim"
+    )
+    console.print(
+        Panel(
+            f"[{colour}]{result.classification.upper()} — risk_score: {result.risk_score:.2f}[/{colour}]\n"
+            f"likelihood: {likelihood} × impact: {impact} / 10",
+            title=f"Score Risk: {category}",
+        )
+    )
+
+
+@app.command(name="write-artefact")
+def write_artefact(
+    artefact_type: str = typer.Argument(
+        help="Artefact type (e.g. context, requirements, risk-register)"
+    ),
+    output_dir: str = typer.Argument(help="Output directory path"),
+    data: str = typer.Argument(help="JSON string of artefact data"),
+    version: str = typer.Option("0.1", help="Artefact version"),
+    json_output: bool = typer.Option(False, "--json", help="Output as JSON for agent parsing"),
+) -> None:
+    """Write a versioned artefact file to the output directory."""
+    import json as json_module
+    from pathlib import Path
+
+    from vibe_spec.output.artefact import write_artefact as _write
+
+    try:
+        parsed = json_module.loads(data)
+    except json_module.JSONDecodeError as e:
+        console.print(f"[red]Invalid JSON data: {e}[/red]")
+        raise typer.Exit(code=1) from e
+
+    path = _write(Path(output_dir), artefact_type, parsed, version)
+
+    if json_output:
+        typer.echo(json.dumps({"path": str(path), "artefact_type": artefact_type}))
+        return
+
+    console.print(
+        Panel(f"[green]Written: {path}[/green]", title=f"Write Artefact: {artefact_type}")
+    )
+
+
 if __name__ == "__main__":
     app()

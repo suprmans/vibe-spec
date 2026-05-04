@@ -12,7 +12,7 @@ Business context (raw input)
    requirements.md  ·  nfr-register.md  ·  gap-analysis.md
    stakeholder-map.json  ·  risk-register.md  ·  spec_health score
            ↓
-    ai-first-sdlc-practices  (downstream)
+    downstream SDLC pipeline
            ↓
    Architecture → Code → Ship
 ```
@@ -289,10 +289,10 @@ vibe-spec/
 - [ ] `orchestrator` — full pipeline chain
 - [ ] `spec_health` composite scoring (end-to-end)
 - [ ] HITL gate 4
-- [ ] ai-first-sdlc-practices integration test
+- [ ] Downstream SDLC pipeline integration test
 
 ### v1.0 — Public release
-- [ ] `sdlc-team-ba` plugin for ai-first-sdlc-practices marketplace
+- [ ] `vibe-spec-ba` plugin for Claude Code plugin marketplace
 - [ ] ReqIQ web interface
 - [ ] Documentation site
 - [ ] Example artefacts from real use cases
