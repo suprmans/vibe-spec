@@ -451,12 +451,17 @@ The problem is not that AI cannot help with BA work. The problem is that no stru
 - [x] `scoring/risk.py` — risk scoring engine with register scorecard
 - [x] Test suite expanded: risk, output, and validation modules covered
 
-### v1.0 — Public release
+### v1.0 — Public release ✓
+- [x] `elicitation-agent` — theme extraction, conflict detection, assumption surfacing
+- [x] `functional-analysis` skill — deep F+NFR analysis with elicitation layer
+- [x] `CLA.md` — contributor licence agreement (AGPL-3.0, pure open source)
+- [x] Example artefacts — 3 real use cases (SaaS onboarding, expense automation, data platform migration)
+- [x] `registry.json` v1.0.0 — all 9 agents and 4 skills marked available, CLI commands catalogued
+- [x] `pyproject.toml` version 1.0.0, classifier updated to Production/Stable
 - [ ] `vibe-spec-ba` plugin for Claude Code plugin marketplace
 - [ ] ReqIQ web interface (powered by vibe-spec agents)
 - [ ] Documentation site
-- [ ] Example artefacts from 5 real use cases
-- [ ] `registry.json` hosted and resolvable via `/plugin marketplace add suprmans/vibe-spec`
+- [ ] Example artefacts — expand to 5 use cases
 
 ---
 

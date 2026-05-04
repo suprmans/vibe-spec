@@ -1,5 +1,5 @@
 {
-  "registry_version": "0.3.0",
+  "registry_version": "1.0.0",
   "publisher": "suprmans",
   "project": "vibe-spec",
   "description": "AI-first business specification framework for Business Analysts, Product Owners, and Product Managers.",
@@ -10,7 +10,7 @@
     {
       "id": "suprmans/vibe-spec:vibe-ba",
       "name": "vibe-ba",
-      "version": "0.1.0",
+      "version": "1.0.0",
       "status": "available",
       "path": "skills/vibe-ba/SKILL.md",
       "description": "Org vibe analysis — chains intake-agent and vibe-analyzer to produce context.json and vibe-fingerprint.json with HITL Gate 1.",
@@ -27,41 +27,59 @@
     {
       "id": "suprmans/vibe-spec:req-elicitation",
       "name": "req-elicitation",
-      "version": "0.2.0",
+      "version": "1.0.0",
       "status": "available",
       "path": "skills/req-elicitation/SKILL.md",
-      "description": "Requirements from context — generates INVEST-scored user stories with acceptance criteria from context.json and vibe-fingerprint.json.",
+      "description": "Requirements from context — generates INVEST-scored user stories, functional requirements, and measurability-scored NFRs from context.json and vibe-fingerprint.json.",
       "babok_areas": [
         "Elicitation & Collaboration",
         "Requirements Life Cycle Management"
       ],
-      "agents_used": ["elicitation-agent", "requirements-agent"],
+      "agents_used": ["requirements-agent", "nfr-agent"],
       "hitl_gates": [2],
       "inputs": ["context.json", "vibe-fingerprint.json"],
-      "outputs": ["requirements.md", "scorecard.json"],
+      "outputs": ["requirements.md", "nfr-register.md", "scorecard.json"],
       "invoke": "/vibe-spec:req-elicitation \"[context.json path]\" \"[vibe-fingerprint.json path]\""
     },
     {
       "id": "suprmans/vibe-spec:gap-analysis",
       "name": "gap-analysis",
-      "version": "0.2.0",
+      "version": "1.0.0",
       "status": "available",
       "path": "skills/gap-analysis/SKILL.md",
-      "description": "Structured gap analysis — generates AS-IS to TO-BE delta ranked by impact and effort.",
+      "description": "Structured gap analysis — generates AS-IS to TO-BE delta ranked by impact and effort, plus stakeholder influence/interest map.",
       "babok_areas": [
         "Requirements Analysis & Design Definition"
       ],
-      "agents_used": ["gap-agent"],
+      "agents_used": ["gap-agent", "stakeholder-agent"],
       "hitl_gates": [3],
-      "inputs": ["requirements.md", "context.json"],
-      "outputs": ["gap-analysis.md"],
+      "inputs": ["requirements.md", "context.json", "vibe-fingerprint.json"],
+      "outputs": ["gap-analysis.md", "stakeholder-map.json"],
       "invoke": "/vibe-spec:gap-analysis \"[requirements.md path]\" \"[context.json path]\""
+    },
+    {
+      "id": "suprmans/vibe-spec:functional-analysis",
+      "name": "functional-analysis",
+      "version": "1.0.0",
+      "status": "available",
+      "path": "skills/functional-analysis/SKILL.md",
+      "description": "Deep functional + non-functional analysis — extracts elicitation themes, detects conflicts and assumptions, then generates user stories, functional requirements, and NFRs in one pass.",
+      "babok_areas": [
+        "Elicitation & Collaboration",
+        "Requirements Life Cycle Management"
+      ],
+      "agents_used": ["elicitation-agent", "requirements-agent", "nfr-agent"],
+      "hitl_gates": [2],
+      "inputs": ["context.json", "vibe-fingerprint.json"],
+      "outputs": ["requirements.md", "nfr-register.md", "scorecard.json"],
+      "invoke": "/vibe-spec:functional-analysis \"[context.json path]\" \"[vibe-fingerprint.json path]\"",
+      "use_instead_of": "req-elicitation when input has multiple stakeholders, conflicts, or high ambiguity"
     }
   ],
   "agents": [
     {
       "id": "intake-agent",
-      "version": "0.1.0",
+      "version": "1.0.0",
       "status": "available",
       "path": "agents/intake-agent.md",
       "babok_area": "Business Analysis Planning & Monitoring",
@@ -70,7 +88,7 @@
     },
     {
       "id": "vibe-analyzer",
-      "version": "0.1.0",
+      "version": "1.0.0",
       "status": "available",
       "path": "agents/vibe-analyzer.md",
       "babok_area": "Strategy Analysis",
@@ -79,8 +97,8 @@
     },
     {
       "id": "elicitation-agent",
-      "version": "0.2.0",
-      "status": "planned",
+      "version": "1.0.0",
+      "status": "available",
       "path": "agents/elicitation-agent.md",
       "babok_area": "Elicitation & Collaboration",
       "output": "elicitation-themes.json",
@@ -88,16 +106,25 @@
     },
     {
       "id": "requirements-agent",
-      "version": "0.2.0",
-      "status": "planned",
+      "version": "1.0.0",
+      "status": "available",
       "path": "agents/requirements-agent.md",
       "babok_area": "Requirements Life Cycle Management",
       "output": "requirements.md",
       "hitl_tier_default": 2
     },
     {
+      "id": "nfr-agent",
+      "version": "1.0.0",
+      "status": "available",
+      "path": "agents/nfr-agent.md",
+      "babok_area": "Requirements Life Cycle Management",
+      "output": "nfr-register.md",
+      "hitl_tier_default": 2
+    },
+    {
       "id": "gap-agent",
-      "version": "0.2.0",
+      "version": "1.0.0",
       "status": "available",
       "path": "agents/gap-agent.md",
       "babok_area": "Requirements Analysis & Design Definition",
@@ -106,7 +133,7 @@
     },
     {
       "id": "stakeholder-agent",
-      "version": "0.2.0",
+      "version": "1.0.0",
       "status": "available",
       "path": "agents/stakeholder-agent.md",
       "babok_area": "Requirements Analysis & Design Definition",
@@ -115,8 +142,8 @@
     },
     {
       "id": "risk-agent",
-      "version": "0.3.0",
-      "status": "planned",
+      "version": "1.0.0",
+      "status": "available",
       "path": "agents/risk-agent.md",
       "babok_area": "Solution Evaluation",
       "output": "risk-register.md",
@@ -124,12 +151,70 @@
     },
     {
       "id": "orchestrator",
-      "version": "0.3.0",
-      "status": "planned",
+      "version": "1.0.0",
+      "status": "available",
       "path": "agents/orchestrator.md",
       "babok_area": "All (coordination only)",
       "output": "spec-health.json",
       "hitl_tier_default": null
+    }
+  ],
+  "cli_commands": [
+    {
+      "command": "vibe-spec validate",
+      "description": "Validate an artefact against CONSTITUTION.md rules",
+      "args": ["artefact_type", "path"],
+      "flags": ["--json"]
+    },
+    {
+      "command": "vibe-spec score-story",
+      "description": "Score a user story against INVEST criteria and detect ambiguity",
+      "flags": ["--text", "--ac", "--has-dependency", "--json"]
+    },
+    {
+      "command": "vibe-spec score-nfr",
+      "description": "Score an NFR criterion for measurability",
+      "flags": ["--category", "--criterion", "--json"]
+    },
+    {
+      "command": "vibe-spec score-gap",
+      "description": "Compute gap priority tier and quick_win_flag",
+      "flags": ["--trace-id", "--effort", "--impact", "--json"]
+    },
+    {
+      "command": "vibe-spec score-risk",
+      "description": "Compute risk score and classification from likelihood × impact",
+      "flags": ["--likelihood", "--impact", "--category", "--json"]
+    },
+    {
+      "command": "vibe-spec spec-health",
+      "description": "Compute spec_health composite score",
+      "flags": ["--requirements-completeness", "--gap-coverage", "--stakeholder-completeness", "--vibe-confidence-avg", "--risk-coverage", "--json"]
+    },
+    {
+      "command": "vibe-spec write-artefact",
+      "description": "Write a versioned artefact file to the output directory",
+      "flags": ["--version", "--json"]
+    }
+  ],
+  "examples": [
+    {
+      "id": "saas-onboarding",
+      "path": "examples/saas-onboarding/",
+      "description": "B2B SaaS company reducing trial user drop-off and time-to-first-value",
+      "artefacts": ["context.json", "vibe-fingerprint.json", "requirements.md"]
+    },
+    {
+      "id": "expense-automation",
+      "path": "examples/expense-automation/",
+      "description": "Professional services firm automating manual expense approval process",
+      "artefacts": ["context.json", "gap-analysis.md"]
+    },
+    {
+      "id": "data-platform-migration",
+      "path": "examples/data-platform-migration/",
+      "description": "Retail bank migrating legacy on-premise data warehouse to cloud",
+      "artefacts": ["context.json"]
     }
   ]
 }

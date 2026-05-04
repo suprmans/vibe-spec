@@ -1,0 +1,157 @@
+{
+  "run_id": "ex-expense-automation-001",
+  "timestamp": "2026-03-20T14:00:00Z",
+  "input_type": "meeting_transcript",
+  "input_summary": "Finance and operations teams at a 200-person professional services firm are struggling with a manual expense approval process. Employees submit paper forms or Excel spreadsheets to their line managers, who then email them to Finance. The process takes 3–6 weeks to reimburse, causing employee dissatisfaction. Finance spends 40 hours/month on manual reconciliation. The CFO has mandated a digital expense management solution to be live within Q3.",
+  "babok_area": "Business Analysis Planning & Monitoring",
+  "intake_confidence": 0.88,
+  "entities": {
+    "people_and_roles": [
+      {
+        "id": "PER-001",
+        "value": "Employee (expense submitter)",
+        "source_text": "Employees submit paper forms or Excel spreadsheets",
+        "confidence": 0.95,
+        "inferred": false
+      },
+      {
+        "id": "PER-002",
+        "value": "Line manager (approver)",
+        "source_text": "submit paper forms or Excel spreadsheets to their line managers",
+        "confidence": 0.93,
+        "inferred": false
+      },
+      {
+        "id": "PER-003",
+        "value": "Finance team",
+        "source_text": "Finance spends 40 hours/month on manual reconciliation",
+        "confidence": 0.96,
+        "inferred": false
+      },
+      {
+        "id": "PER-004",
+        "value": "CFO (executive sponsor)",
+        "source_text": "The CFO has mandated a digital expense management solution",
+        "confidence": 0.97,
+        "inferred": false
+      }
+    ],
+    "systems_and_tools": [
+      {
+        "id": "SYS-001",
+        "value": "Excel spreadsheets (current expense submission)",
+        "source_text": "submit paper forms or Excel spreadsheets",
+        "confidence": 0.91,
+        "inferred": false
+      },
+      {
+        "id": "SYS-002",
+        "value": "Email (current approval routing)",
+        "source_text": "line managers, who then email them to Finance",
+        "confidence": 0.90,
+        "inferred": false
+      }
+    ],
+    "processes": [
+      {
+        "id": "PRC-001",
+        "value": "Manual expense submission (paper/Excel → manager email → Finance)",
+        "source_text": "submit paper forms or Excel spreadsheets to their line managers, who then email them to Finance",
+        "confidence": 0.94,
+        "inferred": false
+      },
+      {
+        "id": "PRC-002",
+        "value": "Monthly finance reconciliation",
+        "source_text": "Finance spends 40 hours/month on manual reconciliation",
+        "confidence": 0.91,
+        "inferred": false
+      }
+    ],
+    "business_objectives": [
+      {
+        "id": "OBJ-001",
+        "value": "Implement digital expense management to eliminate paper/email process",
+        "source_text": "digital expense management solution to be live within Q3",
+        "confidence": 0.96,
+        "inferred": false
+      },
+      {
+        "id": "OBJ-002",
+        "value": "Reduce reimbursement cycle from 3–6 weeks to under 1 week",
+        "source_text": "process takes 3–6 weeks to reimburse, causing employee dissatisfaction",
+        "confidence": 0.87,
+        "inferred": true
+      },
+      {
+        "id": "OBJ-003",
+        "value": "Reduce Finance manual reconciliation effort by at least 50%",
+        "source_text": "Finance spends 40 hours/month on manual reconciliation",
+        "confidence": 0.83,
+        "inferred": true
+      }
+    ],
+    "pain_points": [
+      {
+        "id": "PAIN-001",
+        "value": "3–6 week reimbursement cycle causing employee dissatisfaction",
+        "source_text": "process takes 3–6 weeks to reimburse, causing employee dissatisfaction",
+        "severity": "high",
+        "confidence": 0.94,
+        "inferred": false
+      },
+      {
+        "id": "PAIN-002",
+        "value": "Finance spending 40 hours/month on manual reconciliation",
+        "source_text": "Finance spends 40 hours/month on manual reconciliation",
+        "severity": "high",
+        "confidence": 0.95,
+        "inferred": false
+      },
+      {
+        "id": "PAIN-003",
+        "value": "No audit trail or visibility into expense status",
+        "source_text": "paper forms or Excel spreadsheets",
+        "severity": "medium",
+        "confidence": 0.75,
+        "inferred": true
+      }
+    ],
+    "constraints": [
+      {
+        "id": "CON-001",
+        "value": "Solution must be live in Q3 (CFO mandate)",
+        "source_text": "The CFO has mandated a digital expense management solution to be live within Q3",
+        "confidence": 0.97,
+        "inferred": false
+      },
+      {
+        "id": "CON-002",
+        "value": "200-person firm — solution must scale to all employees",
+        "source_text": "200-person professional services firm",
+        "confidence": 0.88,
+        "inferred": true
+      }
+    ],
+    "dates_and_timelines": [
+      {
+        "id": "DATE-001",
+        "value": "Q3 go-live deadline (CFO mandate)",
+        "absolute_date": "2026-09-30",
+        "ambiguous": false,
+        "source_text": "live within Q3"
+      }
+    ]
+  },
+  "insufficient_input_flags": [],
+  "hitl_tier": "1",
+  "hitl_trigger_reason": null,
+  "approval_log": [
+    {
+      "gate": 1,
+      "approved_by": "example-reviewer",
+      "approved_at": "2026-03-20T14:30:00Z",
+      "note": "Example artefact — approved for documentation purposes"
+    }
+  ]
+}
